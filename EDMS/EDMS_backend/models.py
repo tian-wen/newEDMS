@@ -51,7 +51,6 @@ class BasicInfo(models.Model):
 
 
 class ExpertIntro(models.Model):
-
     # TODO 如有需要为name字段添加索引
     name = models.CharField(max_length=255, db_index=True)
     university = models.CharField(max_length=255)
@@ -252,7 +251,10 @@ class OpinionRaw(models.Model):
 # 自定义用户模型的作用？？？
 class MyUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    interests = models.CharField(max_length=255, blank=True, null=True)
     nickname = models.CharField(max_length=255, blank=False, null=True, db_index=True)
+    gender = models.CharField(max_length=10, blank=False, null=True, )
+    company = models.CharField(max_length=50, blank=True, null=True, )
 
     class Meta:
         verbose_name = "自定义用户"
@@ -272,22 +274,22 @@ class MyUser(models.Model):
 #         return self.nickname
 
 
-class ExpertGroup(models.Model):
-    name = models.CharField(max_length=255, verbose_name="专家分组名")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    expert_id = models.CharField(max_length=255)
-
-    class Meta:
-        verbose_name = "专家分组信息"
-        verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return self.user.username + ":" + self.name
-
-    @classmethod
-    def create(cls, name, user, expert_id):
-        expert_group = cls(name=name, user=user, expert_id=expert_id)
-        return expert_group
+# class ExpertGroup(models.Model):
+#     name = models.CharField(max_length=255, verbose_name="专家分组名")
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     expert_id = models.CharField(max_length=255)
+#
+#     class Meta:
+#         verbose_name = "专家分组信息"
+#         verbose_name_plural = verbose_name
+#
+#     def __str__(self):
+#         return self.user.username + ":" + self.name
+#
+#     @classmethod
+#     def create(cls, name, user, expert_id):
+#         expert_group = cls(name=name, user=user, expert_id=expert_id)
+#         return expert_group
 
 
 class UserFav(models.Model):
@@ -299,7 +301,7 @@ class UserFav(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return self.user.username + "的收藏"
+        return self.user.username + "收藏的" + self.expert_id
 
     @classmethod
     def create(cls, user, expert_id):

@@ -1,9 +1,10 @@
 from django.shortcuts import render, render_to_response
 from django.views.generic import View
-from django.http.response import Http404, JsonResponse, HttpResponse
+from django.http.response import Http404, JsonResponse, HttpResponse,HttpResponseRedirect
 from django.db.models import Q
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse
 import json
 from datetime import datetime
 import operator
@@ -12,7 +13,7 @@ import math
 
 from django.contrib import auth
 from .models import BasicInfo, AcademicInfo, PaperInfo, InfluenceInfo, InfluenceTime, \
-    PapersTime, PaperRelation, OrganizationInfo, OpinionRaw, ExpertGroup, UserFav, User, \
+    PapersTime, PaperRelation, OrganizationInfo, OpinionRaw, UserFav, User, \
     Hometown, HometownRelation, ThemeRelation
 
 
@@ -451,55 +452,130 @@ def expert_detail(request):
 
 def login(request):
     if request.method == 'GET':
-        if request.user.is_authenticated:
-            # TODO 延迟后重定向到之前的界面
-            return HttpResponse("<p>您已登录" + request.user.username + "</p >")
-        return render(request, "login.html")
-    elif request.method == 'POST':
         context = {}
-        username = request.POST.get("username", "")
-        pwd = request.POST.get("password", "")
-        user = auth.authenticate(username=username, password=pwd)
-        context["fav_experts"] = UserFav.objects.filter(user=user)
-        # TODO Group数据表
-        expert_groups = ExpertGroup.objects.filter(user=user)
-        new_dict = {}
-        for expert_group in expert_groups:
-            if expert_group.name not in dict.keys():
-                new_list = [expert_group.expert_id]
-                new_dict[expert_group.name] = new_list
-            else:
-                new_dict[expert_group.name].append(expert_group.expert_id)
-        # print(dict.keys())
-        # print("对应的值：" + str(dict.get("第一个测试分组")))
-        context["expert_groups"] = dict
+        user = request.user
         if user is not None:
             auth.login(request, user)
-            return render(request, "success.html", context=context)
-        else:
-            return render(request, "fail.html")
-    else:
-        print('login request type ERROR!!!')
+            print(user.username)
+            print(user.myuser.nickname)
+            userFav = UserFav.objects.filter(user=user.id)
+            experts = []
+            for userfav in userFav:
+                experts.append(BasicInfo.objects.get(id=userfav.expert_id))
+            context["experts"] = experts
+            return render(request, "userCenter.html", context)
 
-
-def register(request):
-    if request.method == 'GET':
-        return render(request, "register.html")
-    elif request.method == 'POST':
-        errors = []
+    if request.method == 'POST':
         username = request.POST.get("username", "")
-        pwd1 = request.POST.get("password1", "")
-        pwd2 = request.POST.get("password2", "")
-        # TODO 合法性检查
-        if (pwd1 != pwd2):
-            errors.append("两次输入密码不一致")
-        else:
-            user = User.objects.create_user(username=username, password=pwd1)
-            user.save()
-            user = auth.authenticate(username=username, password=pwd1)
+        pwd = request.POST.get("pwd", "")
+        user = auth.authenticate(username=username, password=pwd)
+        context = {}
+        if user is not None:
             auth.login(request, user)
-            return render(request, "success.html")  # HttpResponseRedirect('/')
+            print(user.username)
+            print(user.myuser.nickname)
+            # 通过专家id获得专家信息列表
+            userFav = UserFav.objects.filter(user=user.id)
+            experts = []
+            for userfav in userFav:
+                experts.append(BasicInfo.objects.get(id=userfav.expert_id))
+            context["experts"] = experts
+            return render(request, "userCenter.html", context)
 
-        return render_to_response("register.html", {'errors': errors})
-    else:
-        print('register request type ERROR!!!')
+        return HttpResponse("登陆失败")
+
+
+def editInfo(request):
+    if request.method == 'POST':
+        username = request.POST.get('username', "")
+        company = request.POST.get('company', "")
+        interests = request.POST.get('interests', "")
+        gender = request.POST.get('gender', "")
+
+        request.user.myuser.nickname = username
+        request.user.myuser.company = company
+        request.user.myuser.interests = interests
+        request.user.myuser.gender = gender
+        request.user.myuser.save()
+        return HttpResponseRedirect(reverse('login'))
+
+
+def change_pwd(request):
+    if request.method == 'POST':
+        pwd1 = request.POST.get('pwd1', "")
+        pwd2 = request.POST.get('pwd2', "")
+
+        if pwd1 == pwd2:
+            print("-----------")
+            request.user.set_password(pwd1)
+            request.user.save()
+            return HttpResponse("修改成功")
+        else:
+            print("两次密码不一致")
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect(reverse("index"))
+
+# def login(request):
+#     if request.method == 'GET':
+#         if request.user.is_authenticated:
+#             # TODO 延迟后重定向到之前的界面
+#             return HttpResponse("<p>您已登录" + request.user.username + "</p >")
+#         return render(request, "login.html")
+#     elif request.method == 'POST':
+#         print("test")
+#         context = {}
+#         username = request.POST.get("username", "")
+#         pwd = request.POST.get("password", "")
+#         user = auth.authenticate(username=username, password=pwd)
+#         print("————————————")
+#         # context["fav_experts"] = UserFav.objects.filter(user=user)
+#
+#         # print(context)
+#         if user is not None:
+#             auth.login(request, user)
+#             return render(request, "user1.html")
+#         # TODO Group数据表
+#         # expert_groups = ExpertGroup.objects.filter(user=user)
+#         # new_dict = {}
+#         # for expert_group in expert_groups:
+#         #     if expert_group.name not in dict.keys():
+#         #         new_list = [expert_group.expert_id]
+#         #         new_dict[expert_group.name] = new_list
+#         #     else:
+#         #         new_dict[expert_group.name].append(expert_group.expert_id)
+#         # # print(dict.keys())
+#         # # print("对应的值：" + str(dict.get("第一个测试分组")))
+#         # context["expert_groups"] = dict
+#         # if user is not None:
+#         #     auth.login(request, user)
+#         #     return render(request, "success.html", context=context)
+#         # else:
+#         #     return render(request, "fail.html")
+#     else:
+#         print('login request type ERROR!!!')
+#
+#
+# def register(request):
+#     if request.method == 'GET':
+#         return render(request, "register.html")
+#     elif request.method == 'POST':
+#         errors = []
+#         username = request.POST.get("username", "")
+#         pwd1 = request.POST.get("password1", "")
+#         pwd2 = request.POST.get("password2", "")
+#         # TODO 合法性检查
+#         if (pwd1 != pwd2):
+#             errors.append("两次输入密码不一致")
+#         else:
+#             user = User.objects.create_user(username=username, password=pwd1)
+#             user.save()
+#             user = auth.authenticate(username=username, password=pwd1)
+#             auth.login(request, user)
+#             return render(request, "success.html")  # HttpResponseRedirect('/')
+#
+#         return render_to_response("register.html", {'errors': errors})
+#     else:
+#         print('register request type ERROR!!!')

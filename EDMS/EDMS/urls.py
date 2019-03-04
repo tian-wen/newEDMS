@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 # from django.conf.urls import url
 # from django.views.generic import TemplateView
-from EDMS_backend.views import index, expert_list, expert_detail, login, register
+from EDMS_backend.views import index, expert_list, expert_detail, login, editInfo, change_pwd, logout
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,8 +27,11 @@ urlpatterns = [
     re_path('^$', index, name='index'),
     re_path('^expert_list', expert_list, name='expert_list'),
     re_path('^expert_detail', expert_detail, name='expert_detail'),
-    re_path('^login', login, name='login'),
-    re_path('^register', register, name='register'),
+    re_path('^login/', login, name='login'),
+    path('editInfo/', editInfo, name='editInfo'),
+    path('changePwd/', change_pwd, name='changePwd'),
+    path('logout/', logout, name='logout'),
+    # re_path('^register', register, name='register'),
     # path('index/', index, name='index'),
     # re_path("^$", HomePageView.as_view(), name="index"),
     # re_path("^detail",  ExpertDetailView.as_view(), name="detail"),
