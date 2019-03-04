@@ -56,20 +56,11 @@ TEMPLATES = [
     {
         # 'LOADER': 'django.template.loaders.filesystem.Loader',
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [
-        #     os.path.join(BASE_DIR, "templates"),
-        #     os.path.join(BASE_DIR, 'EDMS_frontend'),
-        # ],
-        # 'APP_DIRS': True,
+        'DIRS': [
+            os.path.join(BASE_DIR, 'EDMS_frontend'),
+        ],
+        'APP_DIRS': True,
         'OPTIONS': {
-            'loaders': [
-                (
-                    'django.template.loaders.filesystem.Loader',
-                    [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'EDMS_frontend')],
-                    # [os.path.join(BASE_DIR, 'EDMS_frontend')],
-                ),
-            ],
-
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
