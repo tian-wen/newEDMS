@@ -1,6 +1,6 @@
 from django.shortcuts import render, render_to_response
 from django.views.generic import View
-from django.http.response import Http404, JsonResponse, HttpResponse,HttpResponseRedirect
+from django.http.response import Http404, JsonResponse, HttpResponse, HttpResponseRedirect
 from django.db.models import Q
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
@@ -15,6 +15,31 @@ from django.contrib import auth
 from .models import BasicInfo, AcademicInfo, PaperInfo, InfluenceInfo, InfluenceTime, \
     PapersTime, PaperRelation, OrganizationInfo, OpinionRaw, UserFav, User, \
     Hometown, HometownRelation, ThemeRelation
+
+universities_abbreviation = {
+    '北大': '北京大学', '人大': '中国人民大学', '清华': '清华大学', '北航': '北京航空航天大学', '北理': '北京理工大学', '中国农大': '中国农业大学', '北师': '北京师范大学',
+    '中央民大': '中央民族大学', '南开': '南开大学', '天大': '天津大学', '大工': '大连理工大学', '大连理工': '大连理工大学', '吉大': '吉林大学', '哈工大': '哈尔滨工业大学',
+    '复旦': '复旦大学', '同济': '同济大学', '上海交大': '上海交通大学', '华东师大': '华东师范大学', '南大': '南京大学', '东大': '东南大学', '中国矿大': '中国矿业大学',
+    '浙大': '浙江大学', '中国科大': '中国科学技术大学', '厦大': '厦门大学', '山大': '山东大学', '中国海大': '中国海洋大学', '武大': '武汉大学', '湖大': '湖南大学',
+    '中大': '中山大学', '华南理工': '华南理工大学', '重大': '重庆大学', '电子科大': '电子科技大学', '西安交大': '西安交通大学', '西工大': '西北工业大学', '西北工大': '西北工业大学',
+    '兰大': '兰州大学', '川大': '四川大学', '西农': '西北农林科技大学', '西北农大': '西北农林科技大学', '中南': '中南大学', '华中大': '华中科技大学', '北京交大': '北京交通大学',
+    '北工大': '北京工业大学',
+    '北科': '北京科技大学', '北化': '北京化工大学', '北邮': '北京邮电大学', '北林': '北京林业大学', '北中医': '北京中医药大学', '北外': '北京外国语大学',
+    '中财': '中央财经大学', '央财': '中央财经大学', '外经贸': '对外经济贸易大学', '贸大': '对外经济贸易大学', '北体': '北京体育大学', '法大': '中国政法大学', '华电': '华北电力大学',
+    '河北工大': '河北工业大学',
+    '太原理工': '太原理工大学', '大连海大': '大连海事大学', '海大': '大连海事大学', '东北师大': '东北师范大学', '哈工程': '哈尔滨工程大学', '东北林大': '东北农业大学',
+    '华理': '华东理工大学',
+    '上外': '上海外国语大学', '上海财大': '上海财经大学', '上财': '上海财经大学', '苏大': '苏州大学', '南航': '南京航空航天大学', '南理工': '南京理工大学', '河海': '河海大学',
+    '南农': '南京农业大学', '南京农大': '南京农业大学', '中国药大': '中国药科大学', '南京师大': '南京师范大学', '南师大': '南京师范大学', '南师': '南京师范大学', '安大': '安徽大学',
+    '合肥工大': '合肥工业大学', '合工大': '合肥工业大学',
+    '福大': '福州大学', '郑大': '郑州大学', '华中农大': '华中农业大学', '华农': '华中农业大学', '华中师大': '华中师范大学', '湖南师大': '湖南师范大学', '暨大': '暨南大学',
+    '华南农大': '华南农业大学',
+    '西南交大': '西南交通大学', '四川农大': '四川农业大学', '川农大': '四川农业大学', '西南财大': '西南财经大学', '西财': '西南财经大学', '贵大': '贵州大学', '云大': '云南大学',
+    '西电': '西安电子科技大学',
+    '陕西师大/陕师大': '陕西师范大学', '中国矿大（北京）': '中国矿业大学（北京）', '地大': '中国地质大学(北京)', '北京地大': '中国地质大学(北京)', '上大': '上海大学',
+    '中南大': '中南财经政法大学',
+    '武汉理工': '武汉理工大学', '中媒': '中国传媒大学', '地大': '中国地质大学', '中石大': '中国石油大学（北京）', '福师': '福建师范大学'
+}
 
 
 def basic_info_2_json(obj):
@@ -304,9 +329,11 @@ def expert_list(request):
             result_num = response['numFound']
         elif query_selection == 'organization':
             # all_experts = BasicInfo.objects.filter(university__icontains=query_input)
-            if query_input == '北大':
-                query_input = '北京大学'
-            query_url = url_basic + 'university:' + query_input + '~'
+            if query_input in universities_abbreviation:
+                query_input = universities_abbreviation[query_input]
+                query_url = url_basic + 'university:' + query_input
+            else:
+                query_url = url_basic + 'university:' + query_input + '~'
             response = requests.get(query_url).json()['response']
             all_experts = response['docs']
             result_num = response['numFound']
@@ -328,6 +355,8 @@ def expert_list(request):
         else:
             experts3 = BasicInfo.objects.all()
         if len(organization) != 0:
+            if organization in universities_abbreviation:
+                organization = universities_abbreviation[organization]
             experts4 = BasicInfo.objects.filter(university__icontains=organization)
         else:
             experts4 = BasicInfo.objects.all()
@@ -343,9 +372,18 @@ def expert_list(request):
     # TODO 同时返回 result_num 用于计算页数
     # result = sort_experts_solr(all_experts)
     result = []
-    for expert in all_experts:
-        expert['score'] = expert['influ']
-        result.append(json.dumps(expert))
+
+    if isinstance(all_experts, list):
+        for expert in all_experts:
+            expert['score'] = expert['influ']
+            result.append(json.dumps(expert))
+    else:
+        result_num = len(all_experts)
+        for expert in all_experts:
+            dict = to_dict(expert)
+
+            dict['score'] = InfluenceInfo.objects.get(id=expert.id).influ
+            result.append(json.dumps(dict))
     result.append(result_num)
     # print(result)
 
@@ -452,71 +490,121 @@ def expert_detail(request):
 
 def login(request):
     if request.method == 'GET':
+        print('Login GET')
         context = {}
-        user = request.user
+        # user = request.user
+        username = request.GET.get('username', '')
+        password = request.GET.get('password', '')
+        print('username: ' + username)
+        print('password: ' + password)
+        user = auth.authenticate(username=username, password=password)
         if user is not None:
+            print('user is not None')
             auth.login(request, user)
-            print(user.username)
-            print(user.myuser.nickname)
+            myuser = user.myuser
             userFav = UserFav.objects.filter(user=user.id)
             experts = []
+            # for userfav in userFav:
+            #     experts.append(BasicInfo.objects.get(id=userfav.expert_id))
+            # context["experts"] = experts
+            # return render(request, "userCenter.html", context)
             for userfav in userFav:
-                experts.append(BasicInfo.objects.get(id=userfav.expert_id))
-            context["experts"] = experts
-            return render(request, "userCenter.html", context)
+                experts.append(json.dumps(to_dict(BasicInfo.objects.get(id=userfav.expert_id))))
+
+            myuserDict = {}
+            myuserDictTemp = to_dict(myuser)
+            if 'id' in myuserDictTemp:
+                myuserDict['id'] = myuserDictTemp['id']
+            if 'nickname' in myuserDictTemp:
+                myuserDict['nickname'] = myuserDictTemp['nickname']
+            if 'interests' in myuserDictTemp:
+                myuserDict['interests'] = myuserDictTemp['interests']
+            if 'user_id' in myuserDictTemp:
+                myuserDict['user_id'] = myuserDictTemp['user_id']
+            if 'gender' in myuserDictTemp:
+                myuserDict['gender'] = myuserDictTemp['gender']
+
+            result = {
+                'myuser': json.dumps(myuserDict),
+                'favExperts': json.dumps(experts),
+            }
+            return HttpResponse(json.dumps(result))
+        else:
+            print('user is None')
+            result = {
+                'myuser': json.dumps([]),
+                'favExperts': json.dumps([]),
+            }
+            return HttpResponse(json.dumps(result))
 
     if request.method == 'POST':
-        username = request.POST.get("username", "")
-        pwd = request.POST.get("pwd", "")
-        user = auth.authenticate(username=username, password=pwd)
+        print('Login POST')
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        print('username: ' + username)
+        print('password: ' + password)
+        user = auth.authenticate(username=username, password=password)
         context = {}
         if user is not None:
+            print('user is not None')
             auth.login(request, user)
-            print(user.username)
-            print(user.myuser.nickname)
             # 通过专家id获得专家信息列表
+            myuser = user.myuser
             userFav = UserFav.objects.filter(user=user.id)
             experts = []
             for userfav in userFav:
-                experts.append(BasicInfo.objects.get(id=userfav.expert_id))
-            context["experts"] = experts
-            return render(request, "userCenter.html", context)
+                experts.append(json.dumps(to_dict(BasicInfo.objects.get(id=userfav.expert_id))))
 
-        return HttpResponse("登陆失败")
+            result = {
+                'myuser': json.dumps(myuser),
+                'favExperts': json.dumps(experts),
+            }
+            return HttpResponse(json.dumps(result))
+            # return render(request, 'userCenter.html', context)
+        else:
+            print('user is None')
+            result = {
+                'myuser': json.dumps([]),
+                'favExperts': json.dumps([]),
+            }
+            return HttpResponse(json.dumps(result))
 
 
 def editInfo(request):
     if request.method == 'POST':
-        username = request.POST.get('username', "")
-        company = request.POST.get('company', "")
-        interests = request.POST.get('interests', "")
-        gender = request.POST.get('gender', "")
+        username = request.POST.get('username', '')
+        company = request.POST.get('company', '')
+        interests = request.POST.get('interests', '')
+        gender = request.POST.get('gender', '')
 
         request.user.myuser.nickname = username
         request.user.myuser.company = company
         request.user.myuser.interests = interests
         request.user.myuser.gender = gender
         request.user.myuser.save()
-        return HttpResponseRedirect(reverse('login'))
+        # return HttpResponseRedirect(reverse('login'))
+        result = {"myuser": json.dumps(to_dict(request.user.myuser))}
+        return HttpResponse(json.dumps(result))
 
 
 def change_pwd(request):
     if request.method == 'POST':
-        pwd1 = request.POST.get('pwd1', "")
-        pwd2 = request.POST.get('pwd2', "")
+        pwd1 = request.POST.get('pwd1', '')
+        pwd2 = request.POST.get('pwd2', '')
 
         if pwd1 == pwd2:
-            print("-----------")
+            print('-----------')
             request.user.set_password(pwd1)
             request.user.save()
-            return HttpResponse("修改成功")
+            return HttpResponse('修改成功')
         else:
-            print("两次密码不一致")
+            print('两次密码不一致')
 
 
 def logout(request):
     auth.logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    # 返回主页
+    return HttpResponseRedirect(reverse('index'))
 
 # def login(request):
 #     if request.method == 'GET':

@@ -43,7 +43,7 @@ class BasicInfo(models.Model):
     class Meta:
         managed = True
         db_table = 'basic_info'
-        verbose_name = '专家基本信息'
+        verbose_name = '专家信息'
         verbose_name_plural = verbose_name
 
     def __str__(self):

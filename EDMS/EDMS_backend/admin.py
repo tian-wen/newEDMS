@@ -1,8 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import UserFav, MyUser
+from .models import UserFav, MyUser, BasicInfo
 
+
+class BasicInfoAdmin(admin.ModelAdmin):
+    list_display = ['name', 'university', 'theme_list']
 
 # Register your models here.
 class MyUserInline(admin.StackedInline):
@@ -22,3 +25,4 @@ class UserFavAdmin(admin.ModelAdmin):
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(UserFav, UserFavAdmin)
+admin.site.register(BasicInfo, BasicInfoAdmin)
