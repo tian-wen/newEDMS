@@ -512,7 +512,7 @@ def login(request):
 def userCenter(request):
     loginResult = 'fail'
     if request.method == 'GET':
-        if request.session.has_key('user_id'):
+        if 'user_id' in request.session.keys():
             loginResult = 'success'
             user_id = request.session['user_id']
             user = User.objects.get(id=user_id)
@@ -732,7 +732,7 @@ def logout(request):
             'logoutResult': 'fail'
         }
 
-    #TODO 这里需要返回状态,还是跳转回主页
+    # TODO 这里需要返回状态,还是跳转回主页
     return HttpResponse(json.dumps(result))
     # user_id = request.session['user_id']
     # user = User.objects.get(id=user_id)
