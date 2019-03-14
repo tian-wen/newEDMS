@@ -14,7 +14,7 @@ import math
 from django.contrib import auth
 from .models import BasicInfo, AcademicInfo, PaperInfo, InfluenceInfo, InfluenceTime, \
     PapersTime, PaperRelation, OrganizationInfo, OpinionRaw, UserFav, User, \
-    Hometown, HometownRelation, ThemeRelation
+    Hometown, HometownRelation, ThemeRelation, MyUser
 
 universities_abbreviation = {
     '北大': '北京大学', '人大': '中国人民大学', '清华': '清华大学', '北航': '北京航空航天大学', '北理': '北京理工大学', '中国农大': '中国农业大学', '北师': '北京师范大学',
@@ -489,201 +489,131 @@ def expert_detail(request):
 
 
 def login(request):
-    loginResult = 'fail'
+    login_result = 'fail'
 
     if request.method == 'GET':
-        pass
-    if request.method == 'POST':
-        username = request.POST.get('username', '')
+        username = request.GET.get('username', '')
         password = request.GET.get('password', '')
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
             request.session['user_id'] = user.id
 
-            loginResult = 'success'
+            login_result = 'success'
+
         result = {
-            'loginResult': loginResult,
+            'loginResult': login_result,
+        }
+
+        return HttpResponse(json.dumps(result))
+    if request.method == 'POST':
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+            request.session['user_id'] = user.id
+
+            login_result = 'success'
+
+        result = {
+            'loginResult': login_result,
         }
 
         return HttpResponse(json.dumps(result))
 
 
-def userCenter(request):
-    loginResult = 'fail'
+def user_center(request):
+    login_result = 'fail'
     if request.method == 'GET':
         if 'user_id' in request.session.keys():
-            loginResult = 'success'
+            login_result = 'success'
             user_id = request.session['user_id']
+            print(user_id)
             user = User.objects.get(id=user_id)
+            # print(user)
+            # print(type(user))
+            # if hasattr(user, 'myuser'):
+            #     print('myuser is in user')
+            # else:
+            #     print('myuser is NOT in user')
+
             myuser = user.myuser
-            userFav = UserFav.objects.filter(user=user.id)
+
+            user_fav = UserFav.objects.filter(user=user.id)
             experts = []
-            for userfav in userFav:
+            for userfav in user_fav:
                 experts.append(json.dumps(to_dict(BasicInfo.objects.get(id=userfav.expert_id))))
 
-            myuserDict = {}
-            myuserDictTemp = to_dict(myuser)
+            myuser_dict = {}
+            myuser_dict_temp = to_dict(myuser)
 
-            if 'id' in myuserDictTemp:
-                myuserDict['id'] = myuserDictTemp['id']
-            if 'nickname' in myuserDictTemp:
-                myuserDict['nickname'] = myuserDictTemp['nickname']
-            if 'interests' in myuserDictTemp:
-                myuserDict['interests'] = myuserDictTemp['interests']
-            if 'user_id' in myuserDictTemp:
-                myuserDict['user_id'] = myuserDictTemp['user_id']
-            if 'gender' in myuserDictTemp:
-                myuserDict['gender'] = myuserDictTemp['gender']
-            if 'company' in myuserDictTemp:
-                myuserDict['company'] = myuserDictTemp['company']
+            if 'id' in myuser_dict_temp:
+                myuser_dict['id'] = myuser_dict_temp['id']
+            if 'nickname' in myuser_dict_temp:
+                myuser_dict['nickname'] = myuser_dict_temp['nickname']
+            if 'interests' in myuser_dict_temp:
+                myuser_dict['interests'] = myuser_dict_temp['interests']
+            if 'user_id' in myuser_dict_temp:
+                myuser_dict['user_id'] = myuser_dict_temp['user_id']
+            if 'gender' in myuser_dict_temp:
+                myuser_dict['gender'] = myuser_dict_temp['gender']
+            if 'company' in myuser_dict_temp:
+                myuser_dict['company'] = myuser_dict_temp['company']
 
             result = {
-                'loginReuslt': loginResult,
-                'myuser': json.dumps(myuserDict),
+                'loginResult': login_result,
+                'myuser': json.dumps(myuser_dict),
                 'favExperts': json.dumps(experts),
             }
 
             return HttpResponse(json.dumps(result))
 
-
         else:
             result = {
-                'loginResult': loginResult,
+                'loginResult': login_result,
             }
 
             return HttpResponse(json.dumps(result))
 
 
-# def login(request):
-#     loginResult = "fail"
-#
-#     if request.method == 'GET':
-#         print('Login GET')
-#         username = request.GET.get('username', '')
-#         password = request.GET.get('password', '')
-#         print('username: ' + username)
-#         print('password: ' + password)
-#         user = auth.authenticate(username=username, password=password)
-#         if user is not None:
-#             print('user is not None')
-#             auth.login(request, user)
-#             loginResult = "success"
-#             myuser = user.myuser
-#             userFav = UserFav.objects.filter(user=user.id)
-#             experts = []
-#             for userfav in userFav:
-#                 experts.append(json.dumps(to_dict(BasicInfo.objects.get(id=userfav.expert_id))))
-#
-#             myuserDict = {}
-#             myuserDictTemp = to_dict(myuser)
-#
-#             if 'id' in myuserDictTemp:
-#                 myuserDict['id'] = myuserDictTemp['id']
-#             if 'nickname' in myuserDictTemp:
-#                 myuserDict['nickname'] = myuserDictTemp['nickname']
-#             if 'interests' in myuserDictTemp:
-#                 myuserDict['interests'] = myuserDictTemp['interests']
-#             if 'user_id' in myuserDictTemp:
-#                 myuserDict['user_id'] = myuserDictTemp['user_id']
-#             if 'gender' in myuserDictTemp:
-#                 myuserDict['gender'] = myuserDictTemp['gender']
-#             if 'company' in myuserDictTemp:
-#                 myuserDict['company'] = myuserDictTemp['company']
-#
-#             result = {
-#                 'loginReuslt': loginResult,
-#                 'myuser': json.dumps(myuserDict),
-#                 'favExperts': json.dumps(experts),
-#             }
-#
-#             return HttpResponse(json.dumps(result))
-#         else:
-#             print('user is None')
-#             result = {
-#                 'loginResult': loginResult,
-#             }
-#             return HttpResponse(json.dumps(result))
-#
-#     if request.method == 'POST':
-#         print('Login POST')
-#         username = request.POST.get('username', '')
-#         password = request.POST.get('password', '')
-#         print('username: ' + username)
-#         print('password: ' + password)
-#         user = auth.authenticate(username=username, password=password)
-#         context = {}
-#         if user is not None:
-#             print('user is not None')
-#             auth.login(request, user)
-#             # 通过专家id获得专家信息列表
-#             myuser = user.myuser
-#             userFav = UserFav.objects.filter(user=user.id)
-#             experts = []
-#             for userfav in userFav:
-#                 experts.append(json.dumps(to_dict(BasicInfo.objects.get(id=userfav.expert_id))))
-#
-#             result = {
-#                 'myuser': json.dumps(myuser),
-#                 'favExperts': json.dumps(experts),
-#             }
-#             return HttpResponse(json.dumps(result))
-#             # return render(request, 'userCenter.html', context)
-#         else:
-#             print('user is None')
-#             result = {
-#                 'myuser': json.dumps([]),
-#                 'favExperts': json.dumps([]),
-#             }
-#             return HttpResponse(json.dumps(result))
+def edit_info(request):
+    if request.method == 'GET':
+        user_id = request.session['user_id']
+        user = User.objects.get(id=user_id)
+        myuser = user.myuser
 
+        username = request.GET.get('username', '')
+        company = request.GET.get('company', '')
+        interests = request.GET.get('interests', '')
+        gender = request.GET.get('gender', '')
 
-# def userCenter(request):
-#     loginResult = 'fail'
-#     if request.method == 'GET':
-#         user = request.user
-#         if user is not None:
-#             print('user is not None')
-#             auth.login(request, user)
-#             loginResult = "success"
-#             myuser = user.myuser
-#             userFav = UserFav.objects.filter(user=user.id)
-#             experts = []
-#             for userfav in userFav:
-#                 experts.append(json.dumps(to_dict(BasicInfo.objects.get(id=userfav.expert_id))))
-#
-#             myuserDict = {}
-#             myuserDictTemp = to_dict(myuser)
-#
-#             if 'id' in myuserDictTemp:
-#                 myuserDict['id'] = myuserDictTemp['id']
-#             if 'nickname' in myuserDictTemp:
-#                 myuserDict['nickname'] = myuserDictTemp['nickname']
-#             if 'interests' in myuserDictTemp:
-#                 myuserDict['interests'] = myuserDictTemp['interests']
-#             if 'user_id' in myuserDictTemp:
-#                 myuserDict['user_id'] = myuserDictTemp['user_id']
-#             if 'gender' in myuserDictTemp:
-#                 myuserDict['gender'] = myuserDictTemp['gender']
-#             if 'company' in myuserDictTemp:
-#                 myuserDict['company'] = myuserDictTemp['company']
-#
-#             result = {
-#                 'loginReuslt': loginResult,
-#                 'myuser': json.dumps(myuserDict),
-#                 'favExperts': json.dumps(experts),
-#             }
-#
-#             return HttpResponse(json.dumps(result))
-#         else:
-#             result = {'loginResult': loginResult}
-#
-#             return HttpResponse(json.dumps(result))
-#     elif request.method == 'POST':
-#         pass
+        myuser.nickname = username
+        myuser.company = company
+        myuser.interests = interests
+        myuser.gender = gender
+        myuser.save()
 
+        myuser_dict = {}
+        myuser_dict_temp = to_dict(myuser)
 
-def editInfo(request):
+        if 'id' in myuser_dict_temp:
+            myuser_dict['id'] = myuser_dict_temp['id']
+        if 'nickname' in myuser_dict_temp:
+            myuser_dict['nickname'] = myuser_dict_temp['nickname']
+        if 'interests' in myuser_dict_temp:
+            myuser_dict['interests'] = myuser_dict_temp['interests']
+        if 'user_id' in myuser_dict_temp:
+            myuser_dict['user_id'] = myuser_dict_temp['user_id']
+        if 'gender' in myuser_dict_temp:
+            myuser_dict['gender'] = myuser_dict_temp['gender']
+        if 'company' in myuser_dict_temp:
+            myuser_dict['company'] = myuser_dict_temp['company']
+
+        # return HttpResponseRedirect(reverse('login'))
+        result = {"myuser": json.dumps(myuser_dict)}
+        return HttpResponse(json.dumps(result))
+
     if request.method == 'POST':
         user_id = request.session['user_id']
         user = User.objects.get(id=user_id)
@@ -699,12 +629,49 @@ def editInfo(request):
         myuser.interests = interests
         myuser.gender = gender
         myuser.save()
+
+        myuser_dict = {}
+        myuser_dict_temp = to_dict(myuser)
+
+        if 'id' in myuser_dict_temp:
+            myuser_dict['id'] = myuser_dict_temp['id']
+        if 'nickname' in myuser_dict_temp:
+            myuser_dict['nickname'] = myuser_dict_temp['nickname']
+        if 'interests' in myuser_dict_temp:
+            myuser_dict['interests'] = myuser_dict_temp['interests']
+        if 'user_id' in myuser_dict_temp:
+            myuser_dict['user_id'] = myuser_dict_temp['user_id']
+        if 'gender' in myuser_dict_temp:
+            myuser_dict['gender'] = myuser_dict_temp['gender']
+        if 'company' in myuser_dict_temp:
+            myuser_dict['company'] = myuser_dict_temp['company']
         # return HttpResponseRedirect(reverse('login'))
         result = {"myuser": json.dumps(to_dict(myuser))}
         return HttpResponse(json.dumps(result))
 
 
 def change_pwd(request):
+    if request.method == 'GET':
+        user_id = request.session['user_id']
+        user = User.objects.get(id=user_id)
+        # myuser = user.myuser
+
+        pwd1 = request.GET.get('pwd1', '')
+        pwd2 = request.GET.get('pwd2', '')
+
+        if pwd1 == pwd2:
+            user.set_password(pwd1)
+            user.save()
+            result = {
+                'changePwdResult': '修改成功',
+            }
+            return HttpResponse(json.dumps(result))
+        else:
+            result = {
+                'changePwdResult': '两次密码不一致',
+            }
+            return HttpResponse(json.dumps(result))
+
     if request.method == 'POST':
         user_id = request.session['user_id']
         user = User.objects.get(id=user_id)
@@ -716,9 +683,32 @@ def change_pwd(request):
         if pwd1 == pwd2:
             user.set_password(pwd1)
             user.save()
-            return HttpResponse('修改成功')
+            result = {
+                'changePwdResult': '修改成功',
+            }
+            return HttpResponse(json.dumps(result))
         else:
-            print('两次密码不一致')
+            result = {
+                'changePwdResult': '两次密码不一致',
+            }
+            return HttpResponse(json.dumps(result))
+
+
+def add_fav(request):
+    if request.method == 'GET':
+        if 'user_id' in request.session.keys():
+            user_id = request.session['user_id']
+            user = User.objects.get(id=user_id)
+
+            expert_id = request.GET.get('expert_id',)
+            user_fav = UserFav.create(user, expert_id)
+            user_fav.save()
+
+            return HttpResponse("添加成功")
+        else:
+            #TODO 或者可以写一个登陆页面，直接跳转
+            return HttpResponse("请先登陆")
+
 
 
 def logout(request):
