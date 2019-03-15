@@ -699,16 +699,33 @@ def add_fav(request):
         if 'user_id' in request.session.keys():
             user_id = request.session['user_id']
             user = User.objects.get(id=user_id)
-
             expert_id = request.GET.get('expert_id',)
-            user_fav = UserFav.create(user, expert_id)
-            user_fav.save()
+            user_favs = UserFav.objects.filter(user=user.id)
+
+            for user_fav in user_favs:
+                if expert_id == user_fav.expert_id:
+                    return HttpResponse("您已收藏该专家")
+                else:
+                    continue
+
+            new_user_fav = UserFav.create(user, expert_id)
+            new_user_fav.save()
 
             return HttpResponse("添加成功")
         else:
             #TODO 或者可以写一个登陆页面，直接跳转
             return HttpResponse("请先登陆")
 
+# 删除收藏专家
+def del_fav(request):
+    if request.method == 'GET':
+        user_id = request.session['user_id']
+        user = User.objects.get(id=user_id)
+        expert_id = request.GET.get('expert_id',)
+
+        UserFav.objects.filter(user=user, expert_id=expert_id).delete()
+
+        return HttpResponse("删除成功")
 
 
 def logout(request):
