@@ -36,9 +36,9 @@ universities_abbreviation = {
     '华南农大': '华南农业大学',
     '西南交大': '西南交通大学', '四川农大': '四川农业大学', '川农大': '四川农业大学', '西南财大': '西南财经大学', '西财': '西南财经大学', '贵大': '贵州大学', '云大': '云南大学',
     '西电': '西安电子科技大学',
-    '陕西师大/陕师大': '陕西师范大学', '中国矿大（北京）': '中国矿业大学（北京）', '地大': '中国地质大学(北京)', '北京地大': '中国地质大学(北京)', '上大': '上海大学',
+    '陕西师大/陕师大': '陕西师范大学', '中国矿大（北京）': '中国矿业大学（北京）', '地大': '中国地质大学', '北京地大': '中国地质大学(北京)', '上大': '上海大学',
     '中南大': '中南财经政法大学',
-    '武汉理工': '武汉理工大学', '中媒': '中国传媒大学', '地大': '中国地质大学', '中石大': '中国石油大学（北京）', '福师': '福建师范大学'
+    '武汉理工': '武汉理工大学', '中媒': '中国传媒大学', '中石大': '中国石油大学（北京）', '福师': '福建师范大学'
 }
 
 
@@ -165,8 +165,11 @@ def find_hometowm_experts(expert_id):
         if expert_list == "set()":
             return result
 
-        for expert_id in expert_list[1:-1].replace(' ', '').split(','):
-            result.append(json.dumps(to_dict(BasicInfo.objects.get(id=expert_id[1:-1]))))
+        if expert_list is not None:
+            expert_id_list = expert_list[1:-1].replace(' ', '').split(',')
+            if expert_id_list is not None and expert_id_list:
+                for expert_id in expert_id_list:
+                    result.append(json.dumps(to_dict(BasicInfo.objects.get(id=expert_id[1:-1]))))
 
         return result
     except:
@@ -177,8 +180,12 @@ def find_interest_experts(theme_list):
     try:
         result = []
         theme_infos = []
-        for theme in theme_list.split('、'):
-            theme_infos = ThemeRelation.objects.filter(theme=theme)
+        if theme_list is not None:
+            themes = theme_list.split('、')
+            if themes is not None and themes:
+                for theme in themes:
+                    theme_infos = ThemeRelation.objects.filter(theme=theme)
+
         if theme_infos is not None:
             for theme_info in theme_infos:
                 result.append(json.dumps(to_dict(BasicInfo.objects.get(id=theme_info.expert_id))))
@@ -297,6 +304,7 @@ def expert_list(request):
     field = request.GET.get('field_input', '')
     research_content = request.GET.get('research_content_input', '')
     organization = request.GET.get('organization_input', '')
+    industry = request.GET.get('query_industry', )
     current_page = request.GET.get('current_page', 1)
 
     current_page_int = int(current_page)
@@ -309,7 +317,7 @@ def expert_list(request):
         if query_selection == 'researcher':
             # all_experts = BasicInfo.objects.filter(name__icontains=query_input)
             # TODO 判定何时使用精确匹配，何时使用模糊匹配，以及模糊之后的排序问题
-            query_url = url_basic + 'name:' + '\'' + query_input + '\''
+            query_url = url_basic + 'name:' + '\"' + query_input + '\"'
             response = requests.get(query_url).json()['response']
             all_experts = response['docs']
             result_num = response['numFound']
@@ -331,12 +339,19 @@ def expert_list(request):
             # all_experts = BasicInfo.objects.filter(university__icontains=query_input)
             if query_input in universities_abbreviation:
                 query_input = universities_abbreviation[query_input]
-                query_url = url_basic + 'university:' + query_input
+                query_url = url_basic + 'university:' + '\"' + query_input + '\"'
             else:
                 query_url = url_basic + 'university:' + query_input + '~'
             response = requests.get(query_url).json()['response']
             all_experts = response['docs']
             result_num = response['numFound']
+        elif query_selection == 'industry':
+            # print(industry)
+            query_url = 'http://127.0.0.1:8983/solr/influence_info/select?q=field:' + industry + '&sort=influ desc' + '&wt=json&rows=' + str(
+                per_page_count) + '&start=' + str(start)
+            response = requests.get(query_url).json()['response']
+            result_num = response['numFound']
+            # print(result_num)
         else:
             raise Http404
 
@@ -373,17 +388,26 @@ def expert_list(request):
     # result = sort_experts_solr(all_experts)
     result = []
 
-    if isinstance(all_experts, list):
-        for expert in all_experts:
-            expert['score'] = expert['influ']
-            result.append(json.dumps(expert))
-    else:
-        result_num = len(all_experts)
-        for expert in all_experts:
-            dict = to_dict(expert)
-
-            dict['score'] = InfluenceInfo.objects.get(id=expert.id).influ
+    if query_selection == 'industry':
+        for influ_info in response['docs']:
+            expert_id = influ_info['id']
+            influ = influ_info['influ']
+            dict = to_dict(BasicInfo.objects.get(id=expert_id))
+            dict['score'] = influ
             result.append(json.dumps(dict))
+    else:
+        if isinstance(all_experts, list):
+            for expert in all_experts:
+                expert['score'] = expert['influ']
+                result.append(json.dumps(expert))
+        else:
+            result_num = len(all_experts)
+            for expert in all_experts:
+                dict = to_dict(expert)
+
+                dict['score'] = InfluenceInfo.objects.get(id=expert.id).influ
+                result.append(json.dumps(dict))
+    # print(result_num)
     result.append(result_num)
     # print(result)
 
@@ -431,12 +455,26 @@ def expert_detail(request):
     co_scores = []
 
     if expert_relation.coid_list is not None:
-        for co_expert_id in expert_relation.coid_list[1:-1].replace(' ', '').split(','):
-            co_experts_id.append(co_expert_id[1:-1])
-        for co_year in expert_relation.year_list[1:-1].replace(' ', '').split(','):
-            co_years.append(co_year[1:-1])
-        for co_score in expert_relation.score_list[1:-1].replace(' ', '').split(','):
-            co_scores.append(co_score)
+        coid_list_temp = expert_relation.coid_list[1:-1]
+        if coid_list_temp is not None:
+            coid_list_temp = coid_list_temp.replace(' ', '').split(',')
+            if coid_list_temp is not None and coid_list_temp:
+                for co_expert_id in coid_list_temp:
+                    co_experts_id.append(co_expert_id[1:-1])
+
+        year_list_temp = expert_relation.year_list[1:-1]
+        if year_list_temp is not None:
+            year_list_temp = year_list_temp.replace(' ', '').split(',')
+            if year_list_temp is not None and year_list_temp:
+                for co_year in year_list_temp:
+                    co_years.append(co_year[1:-1])
+
+        score_list_temp = expert_relation.score_list[1:-1]
+        if score_list_temp is not None:
+            score_list_temp = score_list_temp.replace(' ', '').split(',')
+            if score_list_temp is not None and score_list_temp:
+                for co_score in score_list_temp:
+                    co_scores.append(co_score)
 
     co_experts_info = []
     for i in range(len(co_experts_id)):
@@ -462,6 +500,20 @@ def expert_detail(request):
     same_hometown_experts = find_hometowm_experts(expert_id)
     similar_interest_experts = find_interest_experts(expert_basic.theme_list)
 
+    # 判断专家是否已被收藏
+    fav_result = '未收藏'
+    if 'user_id' in request.session.keys():
+        user_id = request.session['user_id']
+        user = User.objects.get(id=user_id)
+        user_favs = UserFav.objects.filter(user=user.id)
+
+        for user_fav in user_favs:
+            if expert_id == user_fav.expert_id:
+                fav_result = '已收藏'
+                break
+            else:
+                continue
+
     result = {
         'expert_basic': json.dumps(to_dict(expert_basic)),
         'expert_academic': json.dumps(to_dict(expert_academic)),
@@ -473,7 +525,8 @@ def expert_detail(request):
         'opinion_raw': json.dumps(to_dict(opinion_raw)),
         'same_hometown_experts': json.dumps(same_hometown_experts),
         'similar_interest_experts': json.dumps(similar_interest_experts),
-        'paper_num': result_num
+        'paper_num': result_num,
+        'fav_result': fav_result
     }
 
     # print(result)
@@ -486,6 +539,120 @@ def expert_detail(request):
         return HttpResponse(json.dumps(result))
         # return render_to_response('index.html')
         # return render(request, 'detail.html', result)
+
+
+# 论文列表展示
+def paper_list(request):
+    per_page_count = 10
+    expert_id = request.GET.get('id', '')
+
+    current_page = request.GET.get('current_page', 1)
+    current_page_int = int(current_page)
+    start = (current_page_int - 1) * per_page_count
+
+    url_paper = 'http://127.0.0.1:8983/solr/paper_info/select?wt=json&rows=10&sort=citation desc'
+    url_paper += '&start=' + str(start) + '&q='
+
+    query_url = url_paper + 'author1:' + expert_id + ' OR author2:' + expert_id + ' OR author3:' + \
+                expert_id + ' OR author4:' + expert_id + ' OR author5:' + expert_id
+    response = requests.get(query_url).json()['response']
+    paper_row_list = response['docs']
+    paper_list = []
+    for paper in paper_row_list:
+        paper_list.append(json.dumps(to_dict(PaperInfo.objects.get(paper_id=paper['id']))))
+
+    result = {
+        'papers': json.dumps(paper_list)
+    }
+
+    # print(result)
+
+    if request.is_ajax():
+        print('AJAX 访问 expert_detail', len(result))
+        return HttpResponse(json.dumps(result))
+    else:
+        print('非 AJAX 访问 expert_detail', len(result))
+        return HttpResponse(json.dumps(result))
+        # return render_to_response('index.html')
+        # return render(request, 'detail.html', result)
+
+
+# 论文详情展示
+def paper_detail(request):
+    paper_id = request.GET.get('id', '')
+
+    try:
+        paper_info = PaperInfo.objects.get(paper_id=paper_id)
+        paper_info_dict = {
+            'paper_id': paper_info.paper_id,
+            'title': paper_info.title,
+            'type': paper_info.type,
+            'source': paper_info.source,
+            'data1': paper_info.data1,
+            'data2': paper_info.data2,
+            'data3': paper_info.data3,
+            'data4': paper_info.data4,
+            'data5': paper_info.data5,
+            'date': paper_info.date,
+            'abstract': paper_info.abstract,
+            'keyword': paper_info.keyword,
+            'category': paper_info.category,
+            'authors': paper_info.authors,
+            'author1': paper_info.author1,
+            'author2': paper_info.author2,
+            'author3': paper_info.author3,
+            'author4': paper_info.author4,
+            'author5': paper_info.author5,
+            'citation': paper_info.citation,
+        }
+    except:
+        print('数据库中无此论文id:' + paper_id + '对应的信息')
+        paper_info_dict = {}
+
+    # print(paper_info_dict)
+
+    if request.is_ajax():
+        print('AJAX 访问 paper_detail')
+        return HttpResponse(json.dumps(paper_info_dict))
+    else:
+        print('非 AJAX 访问 paper_detail')
+        return HttpResponse(json.dumps(paper_info_dict))
+
+
+# 判断登录状态，若已登录则返回用户 ID
+def check_login(request):
+    check_login_result = 'fail'
+
+    if request.method == 'GET':
+        if 'user_id' in request.session.keys():
+            check_login_result = 'success'
+            user_id = request.session['user_id']
+            print(user_id)
+            result = {
+                'checkLoginResult': check_login_result,
+                'userId': user_id,
+            }
+        else:
+            result = {
+                'checkLoginResult': check_login_result,
+            }
+
+        return HttpResponse(json.dumps(result))
+    if request.method == 'POST':
+        if 'user_id' in request.session.keys():
+            check_login_result = 'success'
+            user_id = request.session['user_id']
+            print(user_id)
+            result = {
+                'checkLoginResult': check_login_result,
+                'userId': user_id,
+            }
+        else:
+            result = {
+                'checkLoginResult': check_login_result,
+            }
+
+        return HttpResponse(json.dumps(result))
 
 
 def login(request):
@@ -694,40 +861,62 @@ def change_pwd(request):
             return HttpResponse(json.dumps(result))
 
 
+# 增添收藏专家
 def add_fav(request):
     if request.method == 'GET':
         if 'user_id' in request.session.keys():
             user_id = request.session['user_id']
             user = User.objects.get(id=user_id)
-            expert_id = request.GET.get('expert_id',)
+            expert_id = request.GET.get('expert_id', )
             user_favs = UserFav.objects.filter(user=user.id)
 
             for user_fav in user_favs:
                 if expert_id == user_fav.expert_id:
-                    return HttpResponse("您已收藏该专家")
+                    result = {
+                        'fav_result': '您已收藏该专家'
+                    }
+                    return HttpResponse(json.dumps(result))
                 else:
                     continue
 
             new_user_fav = UserFav.create(user, expert_id)
             new_user_fav.save()
 
-            return HttpResponse("添加成功")
+            result = {
+                'fav_result': '添加成功'
+            }
+            return HttpResponse(json.dumps(result))
         else:
-            #TODO 或者可以写一个登陆页面，直接跳转
-            return HttpResponse("请先登陆")
+            # TODO 或者可以写一个登陆页面，直接跳转
+            result = {
+                'fav_result': '请先登陆'
+            }
+            return HttpResponse(json.dumps(result))
+
 
 # 删除收藏专家
 def del_fav(request):
     if request.method == 'GET':
-        user_id = request.session['user_id']
-        user = User.objects.get(id=user_id)
-        expert_id = request.GET.get('expert_id',)
+        if 'user_id' in request.session.keys():
+            user_id = request.session['user_id']
+            user = User.objects.get(id=user_id)
+            expert_id = request.GET.get('expert_id', )
 
-        UserFav.objects.filter(user=user, expert_id=expert_id).delete()
+            UserFav.objects.filter(user=user, expert_id=expert_id).delete()
 
-        return HttpResponse("删除成功")
+            result = {
+                'fav_result': '删除成功'
+            }
+            return HttpResponse(json.dumps(result))
+        else:
+            # TODO 或者可以写一个登陆页面，直接跳转
+            result = {
+                'fav_result': '请先登陆'
+            }
+            return HttpResponse(json.dumps(result))
 
 
+# 注销登录
 def logout(request):
     try:
         del request.session['user_id']
