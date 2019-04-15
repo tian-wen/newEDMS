@@ -356,30 +356,43 @@ def expert_list(request):
             raise Http404
 
     elif query_type == 'advanced':
+        print("test")
+        filter_non = lambda c: c if len(c) > 0 else "\"\""
+        print(researcher, organization, research_content, field)
+        if organization in universities_abbreviation:
+            organization = universities_abbreviation[organization]
+        query_str = "name:\"" + researcher +"\" AND university:\"" + organization + "\" AND theme_list:" + filter_non(field)
         # TODO 改用 intersection 操作，避免 where 子句中用 and 操作，使用 qs1 = intersection(qs2, qs3)
-        if len(researcher) != 0:
-            experts1 = BasicInfo.objects.filter(name__icontains=researcher)
-        else:
-            experts1 = BasicInfo.objects.all()
-        if len(field) != 0:
-            experts2 = BasicInfo.objects.filter(theme_list__icontains=field)
-        else:
-            experts2 = BasicInfo.objects.all()
-        if len(research_content) != 0:
-            experts3 = BasicInfo.objects.filter(sub_list__icontains=research_content)
-        else:
-            experts3 = BasicInfo.objects.all()
-        if len(organization) != 0:
-            if organization in universities_abbreviation:
-                organization = universities_abbreviation[organization]
-            experts4 = BasicInfo.objects.filter(university__icontains=organization)
-        else:
-            experts4 = BasicInfo.objects.all()
-        # experts2 = BasicInfo.objects.filter(name__icontains=field)
-        # experts3 = BasicInfo.objects.filter(name__icontains=research_content)
-        # experts4 = BasicInfo.objects.filter(name__icontains=organization)
-        #
-        all_experts = experts1 & experts2 & experts3 & experts4
+        # if len(researcher) != 0:
+        #     experts1 = BasicInfo.objects.filter(name__icontains=researcher)
+        # else:
+        #     experts1 = BasicInfo.objects.all()
+        # if len(field) != 0:
+        #     experts2 = BasicInfo.objects.filter(theme_list__icontains=field)
+        # else:
+        #     experts2 = BasicInfo.objects.all()
+        # if len(research_content) != 0:
+        #     experts3 = BasicInfo.objects.filter(sub_list__icontains=research_content)
+        # else:
+        #     experts3 = BasicInfo.objects.all()
+        # if len(organization) != 0:
+        #     if organization in universities_abbreviation:
+        #         organization = universities_abbreviation[organization]
+        #     experts4 = BasicInfo.objects.filter(university__icontains=organization)
+        # else:
+        #     experts4 = BasicInfo.objects.all()
+        # # experts2 = BasicInfo.objects.filter(name__icontains=field)
+        # # experts3 = BasicInfo.objects.filter(name__icontains=research_content)
+        # # experts4 = BasicInfo.objects.filter(name__icontains=organization)
+        # #
+        # all_experts = experts1 & experts2 & experts3 & experts4
+
+        query_url = url_basic + query_str
+        print(query_url)
+        response = requests.get(query_url).json()['response']
+        all_experts = response['docs']
+        print(all_experts)
+        result_num = response['numFound']
 
     else:
         raise Http404
