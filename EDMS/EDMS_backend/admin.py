@@ -21,7 +21,8 @@ class UserAdmin(BaseUserAdmin):
 class UserFavAdmin(admin.ModelAdmin):
     list_display = ['user', 'expert_id']
 
-
+admin.site.site_header = 'EDMS后台管理'
+admin.site.site_title = 'EDMS'
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(UserFav, UserFavAdmin)
