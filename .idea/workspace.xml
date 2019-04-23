@@ -2,7 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="320f1d4b-c898-4848-92e2-52f65a73d08c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/EDMS/EDMS_backend/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/EDMS/EDMS_backend/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/newEDMS.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/newEDMS.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EDMS/EDMS_backend/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/EDMS/EDMS_backend/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EDMS/EDMS_frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/EDMS/EDMS_frontend/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EDMS/EDMS_frontend/static/css/app.70853e4cef4406ce11ab5da9b11b8d49.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EDMS/EDMS_frontend/static/css/app.70853e4cef4406ce11ab5da9b11b8d49.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EDMS/EDMS_frontend/static/js/app.415ce6185868bf830085.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EDMS/EDMS_frontend/static/js/app.415ce6185868bf830085.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EDMS/EDMS_frontend/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/EDMS/EDMS_frontend/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,86 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="47">
-              <caret line="441" column="61" selection-start-line="441" selection-start-column="60" selection-end-line="441" selection-end-column="61" />
-              <folding>
-                <element signature="e#0#55#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/EDMS/EDMS/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="522">
-              <caret line="34" column="18" selection-start-line="34" selection-start-column="18" selection-end-line="34" selection-end-column="18" />
-              <folding>
-                <element signature="e#628#660#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/tests.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="72">
-              <caret line="4" column="40" lean-forward="true" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="40" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/EDMS/EDMS/settings.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2088">
-              <caret line="116" selection-start-line="116" selection-end-line="116" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/EDMS/EDMS_frontend/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="92" selection-start-column="27" selection-end-column="92" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/EDMS/manage.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4500">
-              <caret line="316" selection-start-line="316" selection-end-line="316" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-                <element signature="e#113#1065#0" />
-                <element signature="e#1103#2029#0" />
-                <element signature="e#2069#2548#0" />
-                <element signature="e#2588#2944#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/admin.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
-              <folding>
-                <element signature="e#0#32#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="198">
+              <caret line="11" column="11" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
             </state>
           </provider>
         </entry>
@@ -102,6 +35,28 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/apps.py">
           <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="324">
+              <caret line="249" column="59" lean-forward="true" selection-start-line="249" selection-start-column="59" selection-end-line="249" selection-end-column="59" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+                <element signature="e#113#1065#0" />
+                <element signature="e#1103#2029#0" />
+                <element signature="e#2069#2548#0" />
+                <element signature="e#2588#2944#0" />
+                <element signature="e#2982#4663#0" />
+                <element signature="e#4705#5362#0" />
+                <element signature="e#5404#7272#0" />
+                <element signature="e#7311#9180#0" />
+                <element signature="e#9222#9577#0" />
+                <element signature="e#9622#10287#0" />
+              </folding>
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -122,6 +77,7 @@
       <find>paper_list</find>
       <find>paper_detail</find>
       <find>score</find>
+      <find>opinion</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -137,27 +93,26 @@
         <option value="$PROJECT_DIR$/EDMS/EDMS_backend/templates/user1.html" />
         <option value="$PROJECT_DIR$/EDMS/EDMS_backend/get_abbreviation.py" />
         <option value="$PROJECT_DIR$/EDMS/EDMS/settings.py" />
-        <option value="$PROJECT_DIR$/EDMS/EDMS_backend/models.py" />
         <option value="$PROJECT_DIR$/EDMS/EDMS_backend/migrations/0004_auto_20190305_2330.py" />
         <option value="$PROJECT_DIR$/EDMS/EDMS/urls.py" />
         <option value="$PROJECT_DIR$/EDMS/EDMS_backend/tests.py" />
-        <option value="$PROJECT_DIR$/EDMS/EDMS_backend/views.py" />
         <option value="$PROJECT_DIR$/EDMS/EDMS_backend/admin.py" />
+        <option value="$PROJECT_DIR$/EDMS/EDMS_backend/views.py" />
+        <option value="$PROJECT_DIR$/EDMS/EDMS_backend/models.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="157" />
-    <option name="y" value="140" />
-    <option name="width" value="1485" />
-    <option name="height" value="945" />
+    <option name="x" value="1912" />
+    <option name="y" value="-8" />
+    <option name="width" value="1456" />
+    <option name="height" value="916" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -168,12 +123,6 @@
             <path>
               <item name="newEDMS" type="b2602c69:ProjectViewProjectNode" />
               <item name="newEDMS" type="462c0819:PsiDirectoryNode" />
-              <item name="EDMS" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="newEDMS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="newEDMS" type="462c0819:PsiDirectoryNode" />
-              <item name="EDMS" type="462c0819:PsiDirectoryNode" />
               <item name="EDMS" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -192,12 +141,13 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="E:/workspace/pycharm/djangomall" />
+    <property name="last_opened_file_path" value="E:/workspace/pycharm/oscar_learn/frobshop" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -274,18 +224,21 @@
       <workItem from="1554278750901" duration="3279000" />
       <workItem from="1554970097147" duration="2334000" />
       <workItem from="1555336574374" duration="1976000" />
-      <workItem from="1555338692469" duration="3008000" />
+      <workItem from="1555338692469" duration="4875000" />
+      <workItem from="1555589128044" duration="624000" />
+      <workItem from="1555662254584" duration="660000" />
+      <workItem from="1556014949291" duration="258000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="60710000" />
+    <option name="totallyTimeSpent" value="64119000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="878" extended-state="6" />
+    <frame x="1912" y="-8" width="1456" height="916" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14142092" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15759312" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -298,8 +251,8 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" visible="true" weight="0.2680965" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50067025" side_tool="true" weight="0.44906166" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.49932975" visible="true" weight="0.42838874" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -356,22 +309,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/EDMS/EDMS/urls.py">
+    <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/admin.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="34" column="18" selection-start-line="34" selection-start-column="18" selection-end-line="34" selection-end-column="18" />
+        <state relative-caret-position="378">
+          <caret line="24" column="30" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
           <folding>
-            <element signature="e#628#660#0" expanded="true" />
+            <element signature="e#0#32#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/EDMS/EDMS/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2088">
-          <caret line="116" selection-start-line="116" selection-end-line="116" />
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/EDMS/manage.py">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/EDMS/EDMS_frontend/index.html">
       <provider selected="true" editor-type-id="text-editor">
@@ -380,49 +329,56 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/EDMS/manage.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/models.py">
+    <entry file="file://$PROJECT_DIR$/EDMS/EDMS/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4500">
-          <caret line="316" selection-start-line="316" selection-end-line="316" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-            <element signature="e#113#1065#0" />
-            <element signature="e#1103#2029#0" />
-            <element signature="e#2069#2548#0" />
-            <element signature="e#2588#2944#0" />
-          </folding>
+        <state relative-caret-position="460">
+          <caret line="116" selection-start-line="116" selection-end-line="116" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/apps.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/tests.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="72">
-          <caret line="4" column="40" lean-forward="true" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="40" />
+          <caret line="4" column="40" selection-start-line="4" selection-start-column="7" selection-end-line="4" selection-end-column="40" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/admin.py">
+    <entry file="file://$PROJECT_DIR$/EDMS/EDMS/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        <state relative-caret-position="460">
+          <caret line="34" column="18" selection-start-line="34" selection-start-column="18" selection-end-line="34" selection-end-column="18" />
           <folding>
-            <element signature="e#0#32#0" expanded="true" />
+            <element signature="e#628#660#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="47">
-          <caret line="441" column="61" selection-start-line="441" selection-start-column="60" selection-end-line="441" selection-end-column="61" />
+        <state relative-caret-position="198">
+          <caret line="11" column="11" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/apps.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/EDMS/EDMS_backend/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="249" column="59" lean-forward="true" selection-start-line="249" selection-start-column="59" selection-end-line="249" selection-end-column="59" />
           <folding>
-            <element signature="e#0#55#0" expanded="true" />
+            <element signature="e#0#28#0" expanded="true" />
+            <element signature="e#113#1065#0" />
+            <element signature="e#1103#2029#0" />
+            <element signature="e#2069#2548#0" />
+            <element signature="e#2588#2944#0" />
+            <element signature="e#2982#4663#0" />
+            <element signature="e#4705#5362#0" />
+            <element signature="e#5404#7272#0" />
+            <element signature="e#7311#9180#0" />
+            <element signature="e#9222#9577#0" />
+            <element signature="e#9622#10287#0" />
           </folding>
         </state>
       </provider>

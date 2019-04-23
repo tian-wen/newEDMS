@@ -1,0 +1,7 @@
+{
+    "remote.onstartup": true,
+    "python.pythonPath": "C:\\ProgramData\\Anaconda3\\envs\\djangomall\\python.exe",
+    "python.linting.pylintEnabled": false,
+    "python.linting.pep8Enabled": true,
+    "python.linting.enabled": true
+}

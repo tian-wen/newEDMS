@@ -236,6 +236,7 @@ class OrganizationInfo(models.Model):
 class OpinionRaw(models.Model):
     id = models.CharField(primary_key=True, max_length=255, db_index=True)
     content = models.TextField(blank=True, null=True)
+    opinion_society = models.TextField(blank=True, null=True)
     expert_id = models.CharField(max_length=255, db_index=True)
     expert_name = models.CharField(max_length=255, blank=True, null=True)
     expert_university = models.CharField(max_length=255, blank=True, null=True)
