@@ -304,7 +304,7 @@ def expert_list(request):
     field = request.GET.get('field_input', '')
     research_content = request.GET.get('research_content_input', '')
     organization = request.GET.get('organization_input', '')
-    industry = request.GET.get('query_industry', )
+    industry = request.GET.get('industry_input', )
     current_page = request.GET.get('current_page', 1)
 
     current_page_int = int(current_page)
@@ -356,12 +356,14 @@ def expert_list(request):
             raise Http404
 
     elif query_type == 'advanced':
-        print("test")
         filter_non = lambda c: c if len(c) > 0 else "\"\""
-        print(researcher, organization, research_content, field)
+        print(researcher, organization, research_content, field, industry)
         if organization in universities_abbreviation:
             organization = universities_abbreviation[organization]
-        query_str = "name:\"" + researcher +"\" AND university:\"" + organization + "\" AND theme_list:" + filter_non(field)
+        if len(industry) == 0:
+            query_str = "name:\"" + researcher +"\" AND university:\"" + organization + "\" AND theme_list:" + filter_non(field)
+        else:
+            query_str = "name:\"" + researcher +"\" AND university:\"" + organization + "\" AND theme_list:" + filter_non(field) + "AND _field:" + industry
         # TODO 改用 intersection 操作，避免 where 子句中用 and 操作，使用 qs1 = intersection(qs2, qs3)
         # if len(researcher) != 0:
         #     experts1 = BasicInfo.objects.filter(name__icontains=researcher)
@@ -391,7 +393,7 @@ def expert_list(request):
         print(query_url)
         response = requests.get(query_url).json()['response']
         all_experts = response['docs']
-        print(all_experts)
+        # print(all_experts)
         result_num = response['numFound']
 
     else:
